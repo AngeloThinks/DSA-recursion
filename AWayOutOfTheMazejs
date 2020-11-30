@@ -1,0 +1,129 @@
+// 8. Find a way out of the maze
+// You have entered a Maze and need to find your way out of it. There are more than one possible paths through the Maze to the single exit point. Write a recursive function that will help you find a possible path through the maze.
+
+// You can use the following mazes to test your program.
+
+// let mySmallMaze = [
+//   [" ", " ", " "],
+//   [" ", "*", " "],
+//   [" ", " ", "e"],
+// ];
+
+// let maze = [
+//   [" ", " ", " ", "*", " ", " ", " "],
+//   ["*", "*", " ", "*", " ", "*", " "],
+//   [" ", " ", " ", " ", " ", " ", " "],
+//   [" ", "*", "*", "*", "*", "*", " "],
+//   [" ", " ", " ", " ", " ", " ", "e"],
+// ];
+// The Maze is represented as a N*M matrix (in the above case, a 3X3 or a 5X7 array). The starting point is the top left corner and the exit is indicated by e. For simplicity purpose, use the bottom right corner of the maze as the exit. You can't go outside the boundaries of the maze. The maze has passages that are blocked and you can't go through them. These blocked passages are indicated by *. Passing through a blocked cell as well as passing though a cell that you have already passed before are forbidden.
+
+// For the above maze, a possible exit path can be RRDDLLDDRRRRRR
+
+function exitPath(
+	maze,
+	currentPosition = [0, 0],
+	visited = [],
+	path = ""
+) {
+	// currentPosition=[Y,X]
+	// maze[Y][X]
+	const positionY = currentPosition[0];
+	const positionX = currentPosition[1];
+
+	if (maze[positionY][positionX] === "e") return path;
+
+	// define each position around the currentPosition
+	const posToTop = positionY - 1 > 0 ? positionY - 1 : 0;
+	const posToRight = positionX + 1 < maze[0].length ? positionX + 1 : positionX;
+	const posToBottom = positionY + 1 < maze.length ? positionY + 1 : positionY;
+	const posToLeft = positionX - 1 > 0 ? positionX - 1 : positionX;
+
+	// push currentPosition to visited
+	visited.push(currentPosition);
+
+	maze[positionY][positionX] = "X";
+
+	// check top, right, bottom and left for any available and unvisited positions
+	if (posToTop !== positionY) {
+		const checkTop = [posToTop, positionX];
+		if (
+			visited.findIndex((a) => a[0] === checkTop[0] && a[1] === checkTop[1]) ===
+			-1
+		) {
+			if (
+				maze[checkTop[0]][checkTop[1]] === " " ||
+				maze[checkTop[0]][checkTop[1]] === "e"
+			) {
+				path += "T";
+				return exitPath(maze, checkTop, visited, path);
+			}
+		}
+	}
+	if (posToRight !== positionX) {
+		const checkRight = [positionY, posToRight];
+		if (
+			visited.findIndex(
+				(a) => a[0] === checkRight[0] && a[1] === checkRight[1]
+			) === -1
+		) {
+			if (
+				maze[checkRight[0]][checkRight[1]] === " " ||
+				maze[checkRight[0]][checkRight[1]] === "e"
+			) {
+				path += "R";
+				return exitPath(maze, checkRight, visited, path);
+			}
+		}
+	}
+	if (posToBottom !== positionY) {
+		const checkBottom = [posToBottom, positionX];
+		if (
+			visited.findIndex(
+				(a) => a[0] === checkBottom[0] && a[1] === checkBottom[1]
+			) === -1
+		) {
+			if (
+				maze[checkBottom[0]][checkBottom[1]] === " " ||
+				maze[checkBottom[0]][checkBottom[1]] === "e"
+			) {
+				path += "D";
+				return exitPath(maze, checkBottom, visited, path);
+			}
+		}
+	}
+	if (posToLeft !== positionX) {
+		const checkLeft = [positionY, posToLeft];
+		if (
+			visited.findIndex(
+				(a) => a[0] === checkLeft[0] && a[1] === checkLeft[1]
+			) === -1
+		) {
+			if (
+				maze[checkLeft[0]][checkLeft[1]] === " " ||
+				maze[checkLeft[0]][checkLeft[1]] === "e"
+			) {
+				path += "L";
+				return exitPath(maze, checkLeft, visited, path);
+			}
+		}
+	}
+
+	return path;
+};
+
+let mySmallMaze1 = [
+	["S", " ", " "],
+	[" ", "*", " "],
+	[" ", " ", "e"],
+];
+let maze1 = [
+	[" ", " ", " ", "*", " ", " ", " "],
+	["*", "*", " ", "*", " ", "*", " "],
+	[" ", " ", " ", " ", " ", " ", " "],
+	[" ", "*", "*", "*", "*", "*", " "],
+	[" ", " ", " ", " ", " ", " ", "e"],
+];
+
+console.log(exitPath(mySmallMaze1));
+console.log(exitPath(maze1));
